@@ -1,4 +1,3 @@
-// api/scrape-pokepastes.js
 const cheerio = require('cheerio');
 
 export default async function handler(req, res) {
@@ -15,18 +14,40 @@ export default async function handler(req, res) {
 
     const pokepastes = [];
 
-    $('a[href*="pokepast.es"]').each((_, el) => {
+    // Get each link + player name
+    const links = $('a[href*="pokepast.es"]');
+
+    for (let i = 0; i < links.length; i++) {
+      const el = links[i];
       const href = $(el).attr('href');
-      const player = $(el).closest('tr').find('td').first().text().trim() || "Unknown";
-      pokepastes.push({ player, pokepaste_url: href });
-    });
+
+      // Try to find player name (assumes 2nd cell in the row is name)
+      const row = $(el).closest('tr');
+      const tds = row.find('td');
+      const player = $(tds[1]).text().trim() || `Player ${i + 1}`;
+
+      // Fetch Pokepaste content
+      let paste = null;
+      try {
+        const pasteId = href.replace("https://pokepast.es/", "").replace(/\/+$/, '');
+        const pasteRes = await fetch(`https://pokepast.es/${pasteId}/raw`);
+        paste = await pasteRes.text();
+      } catch (err) {
+        paste = "Failed to load paste";
+      }
+
+      pokepastes.push({
+        player,
+        pokepaste_url: href,
+        paste
+      });
+    }
 
     res.status(200).json({
       tournament: url,
       teams: pokepastes
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to scrape page', details: error.message });
+    res.status(500).json({ error: 'Failed to scrape or fetch pastes', details: error.message });
   }
 }
-

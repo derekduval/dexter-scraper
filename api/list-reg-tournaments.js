@@ -9,10 +9,10 @@ export default async function handler(req, res) {
     const tournaments = [];
 
     $('.wp-block-table table tbody tr').each((i, el) => {
-      const columns = $(el).find('td');
-      const title = $(columns[0]).text().trim();
-      const format = $(columns[1]).text().trim();
-      const link = $(columns[0]).find('a').attr('href');
+      const titleCell = $(el).find('td').first();
+      const title = titleCell.find('a').text().trim();
+      const link = titleCell.find('a').attr('href');
+      const format = titleCell.find('span').text().trim();
 
       if (/regulation\s*[gi]/i.test(format)) {
         tournaments.push({

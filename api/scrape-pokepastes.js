@@ -1,5 +1,5 @@
 // api/scrape-pokepastes.js
-import cheerio from 'cheerio';
+const cheerio = require('cheerio');
 
 export default async function handler(req, res) {
   const { url } = req.query;

@@ -1,8 +1,8 @@
-import fetch from 'node-fetch';
-import * as cheerio from 'cheerio';
+// api/scrape-pokepastes.js
+import cheerio from 'cheerio';
 
 export default async function handler(req, res) {
-  const url = req.query.url;
+  const { url } = req.query;
 
   if (!url) {
     return res.status(400).json({ error: 'Missing ?url=' });
@@ -25,7 +25,8 @@ export default async function handler(req, res) {
       tournament: url,
       teams: pokepastes
     });
-  } catch (e) {
-    res.status(500).json({ error: 'Failed to scrape page', details: e.toString() });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to scrape page', details: error.message });
   }
 }
+

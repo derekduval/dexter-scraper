@@ -9,14 +9,15 @@ export default async function handler(req, res) {
     const tournaments = [];
 
     $('table tbody tr').each((i, el) => {
-      const cell = $(el).find('td').first();
+      const row = $(el);
+      const firstTd = row.find('td').first();
 
-      const title = cell.find('a').text().trim();
-      const href = cell.find('a').attr('href');
-      const format = cell.find('span').text().trim();
+      const title = firstTd.find('a').text().trim();
+      const href = firstTd.find('a').attr('href');
+      const format = firstTd.find('span.has-small-font-size').text().trim();
 
-      // Ensure link exists and format matches Reg G or I
-      if (href && /regulation\s*[gi]/i.test(format)) {
+      // Only include Reg G or I
+      if (format && /regulation\s*[gi]/i.test(format) && href) {
         tournaments.push({
           title,
           format,

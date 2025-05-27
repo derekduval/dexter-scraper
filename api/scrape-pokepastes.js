@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     // Get each link + player name
     const links = $('a[href*="pokepast.es"]');
 
-    for (let i = 0; i < links.length; i++) {
+    for (let i = 0; i < Math.min(links.length, 16); i++) {
       const el = links[i];
       const href = $(el).attr('href');
 

@@ -8,17 +8,19 @@ export default async function handler(req, res) {
 
     const tournaments = [];
 
-    $('.wp-block-table table tbody tr').each((i, el) => {
-      const titleCell = $(el).find('td').first();
-      const title = titleCell.find('a').text().trim();
-      const link = titleCell.find('a').attr('href');
-      const format = titleCell.find('span').text().trim();
+    $('table tbody tr').each((i, el) => {
+      const cell = $(el).find('td').first();
 
-      if (/regulation\s*[gi]/i.test(format)) {
+      const title = cell.find('a').text().trim();
+      const href = cell.find('a').attr('href');
+      const format = cell.find('span').text().trim();
+
+      // Ensure link exists and format matches Reg G or I
+      if (href && /regulation\s*[gi]/i.test(format)) {
         tournaments.push({
           title,
           format,
-          url: link.startsWith('http') ? link : `https://victoryroad.pro${link}`
+          url: href.startsWith('http') ? href : `https://victoryroad.pro${href}`
         });
       }
     });
